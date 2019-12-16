@@ -25,7 +25,7 @@ type Config struct {
 	V4APIURL string `yaml:"v4_api_url" json:"v4ApiUrl"`
 
 	App struct {
-		IntegrationID int    `yaml:"integration_id" json:"integrationId"`
+		IntegrationID int64  `yaml:"integration_id" json:"integrationId"`
 		WebhookSecret string `yaml:"webhook_secret" json:"webhookSecret"`
 		PrivateKey    string `yaml:"private_key" json:"privateKey"`
 	} `yaml:"app" json:"app"`
@@ -44,7 +44,7 @@ func (c *Config) SetValuesFromEnv(prefix string) {
 	setStringFromEnv("GITHUB_V3_API_URL", prefix, &c.V3APIURL)
 	setStringFromEnv("GITHUB_V4_API_URL", prefix, &c.V4APIURL)
 
-	setIntFromEnv("GITHUB_APP_INTEGRATION_ID", prefix, &c.App.IntegrationID)
+	setInt64FromEnv("GITHUB_APP_INTEGRATION_ID", prefix, &c.App.IntegrationID)
 	setStringFromEnv("GITHUB_APP_WEBHOOK_SECRET", prefix, &c.App.WebhookSecret)
 	setStringFromEnv("GITHUB_APP_PRIVATE_KEY", prefix, &c.App.PrivateKey)
 
@@ -58,9 +58,9 @@ func setStringFromEnv(key, prefix string, value *string) {
 	}
 }
 
-func setIntFromEnv(key, prefix string, value *int) {
+func setInt64FromEnv(key, prefix string, value *int64) {
 	if v, ok := os.LookupEnv(prefix + key); ok {
-		if i, err := strconv.Atoi(v); err == nil {
+		if i, err := strconv.ParseInt(v, 10, 64); err == nil {
 			*value = i
 		}
 	}
